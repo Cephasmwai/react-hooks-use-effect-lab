@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
-  // add useEffect code
+  useEffect(() => {
+    // Start the countdown timer
+    if (timeRemaining === 0) {
+      // If time runs out, reset the timer and call onAnswered with false
+      onAnswered(false);
+      setTimeRemaining(10);
+      return;
+    }
+
+    // Decrease timeRemaining by 1 every second
+    const timerId = setTimeout(() => {
+      setTimeRemaining((prev) => prev - 1);
+    }, 1000);
+
+    // Cleanup function to clear the timeout when timeRemaining changes
+    return () => clearTimeout(timerId);
+  }, [timeRemaining, onAnswered]);
 
   function handleAnswer(isCorrect) {
-    setTimeRemaining(10);
+    setTimeRemaining(10); // Reset the timer when an answer is chosen
     onAnswered(isCorrect);
   }
 
